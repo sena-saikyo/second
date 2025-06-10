@@ -1,0 +1,7 @@
+name: breakout
+description: A simple Breakout game using Dart.
+version: 1.0.0
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dependencies:
+
