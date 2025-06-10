@@ -1,18 +1,18 @@
 import 'dart:html';
 import 'dart:async';
 
-CanvasRenderingContext2D ctx;
-CanvasElement canvas;
+late CanvasRenderingContext2D ctx;
+late CanvasElement canvas;
 
 const ballRadius = 10;
-num x;
-num y;
+late num x;
+late num y;
 num dx = 2;
 num dy = -2;
 
 const paddleHeight = 10;
 const paddleWidth = 75;
-num paddleX;
+late num paddleX;
 
 bool rightPressed = false;
 bool leftPressed = false;
@@ -41,7 +41,7 @@ void drawBall() {
 
 void drawPaddle() {
   ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.rect(paddleX, canvas.height! - paddleHeight, paddleWidth, paddleHeight);
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
@@ -83,7 +83,7 @@ void collisionDetection() {
           score++;
           if (score == brickRowCount * brickColumnCount) {
             window.alert('YOU WIN, CONGRATS!');
-            document.location.reload();
+            window.location.reload();
           }
         }
       }
@@ -92,31 +92,31 @@ void collisionDetection() {
 }
 
 void draw(Timer t) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width!, canvas.height!);
   drawBricks();
   drawBall();
   drawPaddle();
   drawScore();
   collisionDetection();
 
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+  if (x + dx > canvas.width! - ballRadius || x + dx < ballRadius) {
     dx = -dx;
   }
   if (y + dy < ballRadius) {
     dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
+  } else if (y + dy > canvas.height! - ballRadius) {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
     } else {
       window.alert('GAME OVER');
-      document.location.reload();
+      window.location.reload();
     }
   }
 
   x += dx;
   y += dy;
 
-  if (rightPressed && paddleX < canvas.width - paddleWidth) {
+  if (rightPressed && paddleX < canvas.width! - paddleWidth) {
     paddleX += 7;
   } else if (leftPressed && paddleX > 0) {
     paddleX -= 7;
@@ -141,7 +141,7 @@ void keyUpHandler(KeyboardEvent e) {
 
 void mouseMoveHandler(MouseEvent e) {
   var relativeX = e.client.x - canvas.getBoundingClientRect().left;
-  if (relativeX > 0 && relativeX < canvas.width) {
+  if (relativeX > 0 && relativeX < canvas.width!) {
     paddleX = relativeX - paddleWidth / 2;
   }
 }
@@ -149,9 +149,9 @@ void mouseMoveHandler(MouseEvent e) {
 void main() {
   canvas = querySelector('#gameCanvas') as CanvasElement;
   ctx = canvas.context2D;
-  x = canvas.width / 2;
-  y = canvas.height - 30;
-  paddleX = (canvas.width - paddleWidth) / 2;
+  x = canvas.width! / 2;
+  y = canvas.height! - 30;
+  paddleX = (canvas.width! - paddleWidth) / 2;
 
   document.onKeyDown.listen(keyDownHandler);
   document.onKeyUp.listen(keyUpHandler);
