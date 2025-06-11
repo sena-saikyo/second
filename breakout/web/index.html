@@ -5,9 +5,25 @@
   <title>Breakout with Dart</title>
   <style>
     canvas { background: #eee; display: block; margin: 0 auto; }
+    #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+    }
   </style>
 </head>
 <body>
+  <div id="startScreen">
+    <h1 id="message">Breakout Game</h1>
+    <button id="startButton">Start</button>
+  </div>
   <canvas id="gameCanvas" width="480" height="320"></canvas>
   <script defer src="main.dart.js"></script>
 </body>
