@@ -3,6 +3,11 @@ import 'dart:async';
 
 late CanvasRenderingContext2D ctx;
 late CanvasElement canvas;
+late DivElement startScreen;
+late ButtonElement startButton;
+late HeadingElement message;
+Timer? gameTimer;
+bool gameRunning = false;
 
 const ballRadius = 10;
 late num x;
@@ -30,6 +35,33 @@ List<List<Map<String, dynamic>>> bricks = List.generate(
     (_) => List.generate(brickRowCount, (_) => {'x': 0, 'y': 0, 'status': 1}));
 
 int score = 0;
+
+void showStartScreen(String text) {
+  message.text = text;
+  startScreen.style.display = 'flex';
+  gameRunning = false;
+}
+
+void startGame([Event? _]) {
+  startScreen.style.display = 'none';
+  x = canvas.width! / 2;
+  y = canvas.height! - 30;
+  paddleX = (canvas.width! - paddleWidth) / 2;
+  dx = 2;
+  dy = -2;
+  bricks = List.generate(
+      brickColumnCount,
+      (_) => List.generate(brickRowCount, (_) => {'x': 0, 'y': 0, 'status': 1}));
+  score = 0;
+  gameRunning = true;
+  gameTimer?.cancel();
+  gameTimer = Timer.periodic(Duration(milliseconds: 10), draw);
+}
+
+void endGame(String text) {
+  gameTimer?.cancel();
+  showStartScreen(text);
+}
 
 void drawBall() {
   ctx.beginPath();
@@ -82,8 +114,7 @@ void collisionDetection() {
           b['status'] = 0;
           score++;
           if (score == brickRowCount * brickColumnCount) {
-            window.alert('YOU WIN, CONGRATS!');
-            window.location.reload();
+            endGame('YOU WIN, CONGRATS!');
           }
         }
       }
@@ -108,8 +139,7 @@ void draw(Timer t) {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
     } else {
-      window.alert('GAME OVER');
-      window.location.reload();
+      endGame('GAME OVER');
     }
   }
 
@@ -149,6 +179,11 @@ void mouseMoveHandler(MouseEvent e) {
 void main() {
   canvas = querySelector('#gameCanvas') as CanvasElement;
   ctx = canvas.context2D;
+  startScreen = querySelector('#startScreen') as DivElement;
+  startButton = querySelector('#startButton') as ButtonElement;
+  message = querySelector('#message') as HeadingElement;
+  startButton.onClick.listen(startGame);
+
   x = canvas.width! / 2;
   y = canvas.height! - 30;
   paddleX = (canvas.width! - paddleWidth) / 2;
@@ -157,5 +192,5 @@ void main() {
   document.onKeyUp.listen(keyUpHandler);
   document.onMouseMove.listen(mouseMoveHandler);
 
-  Timer.periodic(Duration(milliseconds: 10), draw);
+  showStartScreen('Breakout Game');
 }
